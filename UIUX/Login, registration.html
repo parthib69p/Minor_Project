@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Evalia — Authentication Gateway</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        evalia: {
+          bg: '#080B12',
+          surface: '#0F172A',
+          card: '#151B28',
+          elevated: '#1E293B',
+          primary: '#6366F1',
+          secondary: '#3B82F6',
+          accent: '#8B5CF6',
+          success: '#10B981',
+          warning: '#F59E0B',
+          error: '#EF4444',
+          text: '#F8FAFC',
+          muted: '#94A3B8',
+          border: '#334155'
+        }
+      },
+      fontFamily: {
+        heading: ['Space Grotesk', 'sans-serif'],
+        sans: ['Inter', 'sans-serif']
+      },
+      animation: {
+        'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'float-slow': 'float 7s ease-in-out infinite',
+        'float-delayed': 'float 8s ease-in-out 2s infinite',
+        'shimmer': 'shimmer 2.5s infinite'
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' }
+        },
+        shimmer: {
+          '100%': { transform: 'translateX(100%)' }
+        }
+      }
+    }
+  }
+}
+</script>
+<style>
+  body {
+    background-color: #080B12;
+    color: #F8FAFC;
+    font-family: 'Inter', sans-serif;
+  }
+  .glow-indigo {
+    box-shadow: 0 0 35px -5px rgba(99, 102, 241, 0.28);
+  }
+  .glow-violet {
+    box-shadow: 0 0 30px -5px rgba(139, 92, 246, 0.25);
+  }
+  .glow-core {
+    box-shadow: 0 0 60px 10px rgba(99, 102, 241, 0.22), 0 0 100px 30px rgba(139, 92, 246, 0.15);
+  }
+  .tab-btn.active {
+    background: #1E293B;
+    color: #F8FAFC;
+    border-color: #6366F1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+</style>
+</head>
+<body class="min-h-screen bg-[#080B12] text-[#F8FAFC] flex flex-col antialiased selection:bg-[#6366F1]/30 selection:text-white relative overflow-x-hidden">
+
+  <!-- Background Ambient Cinematic Glows -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="absolute -top-40 -left-40 w-[600px] h-[600px] bg-[#6366F1]/10 rounded-full blur-[140px]"></div>
+    <div class="absolute top-1/3 -right-40 w-[700px] h-[700px] bg-[#8B5CF6]/12 rounded-full blur-[160px]"></div>
+    <div class="absolute -bottom-40 left-1/3 w-[600px] h-[600px] bg-[#3B82F6]/08 rounded-full blur-[150px]"></div>
+    <!-- Subtle Grid overlay -->
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b10_1px,transparent_1px),linear-gradient(to_bottom,#1e293b10_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-40"></div>
+  </div>
+
+  <!-- Top Minimal Navigation -->
+  <header class="relative z-20 w-full max-w-7xl mx-auto px-6 sm:px-8 py-6 flex items-center justify-between">
+    <!-- Evalia Logo -->
+    <a href="#" class="group flex items-center gap-3.5 focus:outline-none focus:ring-2 focus:ring-[#6366F1]/50 rounded-lg py-1 px-1.5 transition-all">
+      <div class="relative w-10 h-10 rounded-xl bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center p-[1px] shadow-lg shadow-[#6366F1]/25 group-hover:shadow-[#6366F1]/40 transition-all">
+        <div class="w-full h-full bg-[#0F172A] rounded-[11px] flex items-center justify-center">
+          <svg class="w-5 h-5 text-[#F8FAFC] transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 6h16M4 12h10M4 18h16" />
+            <circle cx="19" cy="12" r="2" fill="#8B5CF6" stroke="none" />
+          </svg>
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <span class="font-heading font-bold text-xl tracking-tight text-[#F8FAFC] flex items-center gap-1.5">
+          Evalia
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse"></span>
+        </span>
+        <span class="text-[10px] text-[#94A3B8] font-medium tracking-wide uppercase hidden sm:inline">Smarter Learning. Smarter Assessment.</span>
+      </div>
+    </a>
+
+    <!-- Top-Right Action -->
+    <div class="flex items-center gap-4">
+      <a href="#" class="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#94A3B8] hover:text-[#F8FAFC] transition-all px-3.5 py-1.5 rounded-lg border border-transparent hover:border-[#334155] hover:bg-[#0F172A]/70 group">
+        <svg class="w-4 h-4 text-[#94A3B8] group-hover:-translate-x-0.5 group-hover:text-[#6366F1] transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span>Back to Home</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Interactive State Switcher / Screen Selector (Demonstrating all 8 required screens seamlessly) -->
+  <div class="relative z-30 max-w-7xl mx-auto px-6 w-full mb-3">
+    <div class="bg-[#151B28]/90 border border-[#334155]/70 rounded-2xl p-2 backdrop-blur-md flex items-center justify-between gap-3 overflow-x-auto shadow-xl">
+      <div class="flex items-center gap-2 shrink-0 px-2 text-xs font-heading font-semibold text-[#8B5CF6] tracking-wider uppercase">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+        </svg>
+        <span>Auth Flows:</span>
+      </div>
+      <div class="flex items-center gap-1.5 overflow-x-auto py-0.5" id="screen-tabs">
+        <button onclick="switchScreen('login')" data-screen="login" class="tab-btn active px-3 py-1.5 rounded-lg text-xs font-medium border border-transparent text-[#94A3B8] hover:text-white transition-all whitespace-nowrap">
+          1. Login
+        </button>
+        <button onclick="switchScreen('student-reg')" data-screen="student-reg" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium border border-transparent text-[#94A3B8] hover:text-white transition-all whitespace-nowrap">
+          2. Student Reg
+        </button>
+        <button onclick="switchScreen('teacher-reg')" data-screen="teacher-reg" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium border border-transparent text-[#94A3B8] hover:text-white transition-all whitespace-nowrap">
+          3. Teacher Reg
+        </button>
+        <button onclick="switchScreen('teacher-pending')" data-screen="teacher-pending" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium border border-transparent text-[#94A3B8] hover:text-white transition-all whitespace-nowrap">
+          4. Teacher Pending
+        </button>
+        <button onclick="switchScreen('forgot-password')" data-screen="forgot-password" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium border border-transparent text-[#94A3B8] hover:text-white transition-all whitespace-nowrap">
+          5. Forgot Password
+        </button>
+        <button onclick="switchScreen('otp-verify')" data-screen="otp-verify" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium border border-transparent text-[#94A3B8] hover:text-white transition-all whitespace-nowrap">
+          6. OTP Verify
+        </button>
+        <button onclick="switchScreen('reset-password')" data-screen="reset-password" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium border border-transparent text-[#94A3B8] hover:text-white transition-all whitespace-nowrap">
+          7. Reset Password
+        </button>
+        <button onclick="switchScreen('success-redirect')" data-screen="success-redirect" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium border border-transparent text-[#94A3B8] hover:text-white transition-all whitespace-nowrap">
+          8. Success & Redirect
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Split-Screen Container -->
+  <main class="relative z-10 flex-1 max-w-7xl mx-auto w-full px-4 sm:px-8 py-4 lg:py-8 flex flex-col justify-center">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+      
+      <!-- ================= LEFT SIDE: AUTHENTICATION FORMS ================= -->
+      <div class="lg:col-span-6 w-full max-w-xl mx-auto lg:mx-0 order-1">
+        <div class="bg-[#151B28]/95 border border-[#334155]/80 rounded-2xl p-6 sm:p-9 shadow-2xl backdrop-blur-xl relative overflow-hidden transition-all duration-300">
+          
+          <!-- Subtle top highlight line -->
+          <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#6366F1] to-transparent opacity-70"></div>
+
+          <!-- ================= SCREEN 1: LOGIN ================= -->
+          <div id="screen-login" class="screen-view transition-opacity duration-300">
+            <div class="mb-7">
+              <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#1E293B] border border-[#334155] text-[11px] font-medium text-[#8B5CF6] mb-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#6366F1] animate-ping"></span>
+                Secure Institutional Access
+              </div>
+              <h1 class="font-heading font-bold text-2xl sm:text-3xl text-[#F8FAFC] tracking-tight">Welcome back</h1>
+              <p class="text-sm text-[#94A3B8] mt-1.5">Sign in to continue your Evalia experience.</p>
+            </div>
+
+            <!-- Error Banner (Conditional Demonstration) -->
+            <div id="login-error" class="hidden mb-5 p-3 rounded-xl bg-[#EF4444]/10 border border-[#EF4444]/30 text-xs text-[#EF4444] flex items-center gap-2.5">
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <span>Incorrect email or password. Please try again.</span>
+            </div>
+
+            <form id="login-form" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+              <!-- Email Input -->
+              <div>
+                <label for="login-email" class="block text-xs font-medium text-[#F8FAFC] mb-1.5">Email address</label>
+                <div class="relative">
+                  <input type="email" id="login-email" required placeholder="Enter your email" value="alex.morrison@evalia.edu"
+                    class="w-full bg-[#1E293B] border border-[#334155] text-sm text-[#F8FAFC] rounded-xl px-4 py-3 placeholder-[#94A3B8]/60 focus:outline-none focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all">
+                </div>
+              </div>
+
+              <!-- Password Input -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <label for="login-password" class="block text-xs font-medium text-[#F8FAFC]">Password</label>
+                  <button type="button" onclick="switchScreen('forgot-password')" class="text-xs font-medium text-[#94A3B8] hover:text-[#6366F1] transition-colors focus:outline-none">
+                    Forgot password?
+                  </button>
+                </div>
+                <div class="relative">
+                  <input type="password" id="login-password" required placeholder="Enter your password" value="••••••••••••"
+                    class="w-full bg-[#1E293B] border border-[#334155] text-sm text-[#F8FAFC] rounded-xl pl-4 pr-11 py-3 placeholder-[#94A3B8]/60 focus:outline-none focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all">
+                  <button type="button" onclick="togglePasswordVisibility('login-password', this)" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#F8FAFC] transition-colors focus:outline-none" aria-label="Toggle password visibility">
+                    <svg class="w-4 h-4 eye-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Primary Submit Button -->
+              <button type="submit" id="login-submit-btn"
+                class="w-full mt-2 bg-[#6366F1] hover:bg-[#5558E6] text-[#F8FAFC] font-heading font-medium text-sm py-3.5 px-4 rounded-xl transition-all duration-200 glow-indigo flex items-center justify-center gap-2 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#6366F1]/50 shadow-lg">
+                <span id="login-btn-text">Sign In</span>
+                <svg id="login-btn-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+                <div id="login-btn-spinner" class="hidden w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              </button>
+            </form>
+
+            <!-- Test State Toggle Helper -->
+            <div class="mt-3 flex items-center justify-between text-[11px] text-[#94A3B8]">
+              <span class="text-[#94A3B8]/70">Simulation controls:</span>
+              <div class="flex gap-2">
+                <button type="button" onclick="toggleLoginError()" class="hover:text-[#EF4444] transition-colors underline">Toggle Error Alert</button>
+                <span>•</span>
+                <button type="button" onclick="simulateLoginSuccess()" class="hover:text-[#10B981] transition-colors underline">Simulate Login Flow</button>
+              </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="relative my-5">
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-[#334155]"></div>
+              </div>
+              <div class="relative flex justify-center text-xs uppercase">
+                <span class="bg-[#151B28] px-3 text-[#94A3B8] font-medium tracking-wider">OR</span>
+              </div>
+            </div>
+
+            <!-- Google Authentication -->
+            <button type="button" onclick="simulateGoogleAuth()" class="w-full bg-[#151B28] hover:bg-[#1E293B] border border-[#334155] text-xs sm:text-sm font-medium text-[#F8FAFC] py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-3 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#334155]">
+              <svg class="w-4 h-4" viewBox="0 0 24 24">
+                <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z" />
+                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z" />
+                <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.1-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z" />
+                <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16c1.8 3.7 5.6 7 10.1 7z" />
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+
+            <!-- Registration CTA -->
+            <div class="mt-6 text-center text-xs text-[#94A3B8]">
+              Don't have an account?
+              <button type="button" onclick="switchScreen('student-reg')" class="text-[#6366F1] hover:text-[#8B5CF6] font-medium ml-1 transition-colors underline focus:outline-none">
+                Create account
+              </button>
+            </div>
+          </div>
+
+          <!-- ================= SCREEN 2: CREATE STUDENT ACCOUNT ================= -->
+          <div id="screen-student-reg" class="screen-view hidden transition-opacity duration-300">
+            <div class="mb-6">
+              <div class="flex items-center justify-between mb-2">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#1E293B] border border-[#334155] text-[11px] font-medium text-[#3B82F6]">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#3B82F6]"></span>
+                  Student Registration
+                </span>
+                <button type="button" onclick="switchScreen('teacher-reg')" class="text-xs text-[#94A3B8] hover:text-[#8B5CF6] transition-colors underline">
+                  Are you a teacher?
+                </button>
+              </div>
+              <h1 class="font-heading font-bold text-2xl text-[#F8FAFC] tracking-tight">Create student account</h1>
+              <p class="text-xs sm:text-sm text-[#94A3B8] mt-1">Join Evalia for free AI evaluations and smart examinations.</p>
+            </div>
+
+            <form onsubmit="handleStudentRegSubmit(event)" class="space-y-3.5">
+              <div>
+                <label class="block text-xs font-medium text-[#F8FAFC] mb-1">Full Name</label>
+                <input type="text" required placeholder="e.g. Jordan Diaz" value="Jordan Diaz"
+                  class="w-full bg-[#1E293B] border border-[#334155] text-sm text-[#F8FAFC] rounded-xl px-4 py-2.5 placeholder-[#94A3B8]/60 focus:outline-none focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]">
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium text-[#F8FAFC] mb-1">Email address</label>
+                <input type="email" required placeholder="student@university.edu" value="jordan.diaz@student.edu"
+                  class="w-full bg-[#1E293B] border border-[#334155] text-sm text-[#F8FAFC] rounded-xl px-4 py-2.5 placeholder-[#94A3B8]/60 focus:outline-none focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]">
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-medium text-[#F8FAFC] mb-1">Password</label>
+                  <input type="password" id="student-pass" required placeholder="Create password" value="SecurePass@2025"
+                    class="w-full bg-[#1E293B] border border-[#334155] text-sm text-[#F8FAFC] rounded-xl px-4 py-2.5 placeholder-[#94A3B8]/60 focus:outline-none focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]">
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-[#F8FAFC] mb-1">Confirm Password</label>
+                  <input type="password" required placeholder="Repeat password" value="SecurePass@2025"
+                    class="w-full bg-[#1E293B] border border-[#334155] text-sm text-[#F8FAFC] rounded-xl px-4 py-2.5 placeholder-[#94A3B8]/60 focus:outline-none focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]">
+                </div>
+              </div>
+
+              <!-- Perks badge -->
+              <div class="p-2.5 rounded-xl bg-[#080B12]/80 border border-[#334155]/60 text-[11px] text-[#94A3B8] flex items-center gap-2">
+                <svg class="w-4 h-4 text-[#10B981] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>100% Free: No fees, subscriptions, or credit cards required ever.</span>
+              </div>
+
+              <button type="submit" class="w-full bg-[#6366F1] hover:bg-[#5558E6] text-[#F8FAFC] font-heading font-medium text-sm py-3 px-4 rounded-xl transition-all glow-indigo">
+                Create Student Account
+              </button>
+            </form>
+
+            <div class="mt-5 text-center text-xs text-[#94A3B8]">
+              Already have an account?
+              <button type="button" onclick="switchScreen('login')" class="text-[#6366F1] hover:text-[#8B5CF6] font-medium ml-1 underline">Sign in</button>
+            </div>
+          </div>
+
+          <!-- ================= SCREEN 3: CREATE TEACHER ACCOUNT ================= -->
+          <div id="screen-teacher-reg" class="screen-view hidden transition-opacity duration-300">
+            <div class="mb-6">
+              <div class="flex items-center justify-between mb-2">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#1E293B] border border-[#334155] text-[11px] font-medium text-[#8B5CF6]">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#8B5CF6]"></span>
+                  Faculty & Teacher Registration
+                </span>
+                <button type="button" onclick="switchScreen('student-reg')" class="text-xs text-[#94A3B8] hover:text-[#6366F1] transition-colors underline">
+                  Student registration?
+                </button>
+              </div>
+              <h1 class="font-heading font-bold text-2xl text-[#F8FAFC] tracking-tight">Register as an Educator</h1>
+              <p class="text-xs sm:text-sm text-[#94A3B8] mt-1">Syllabi creation, AI grading cockpit, and live proctoring.</p>
+            </div>
+
+            <form onsubmit="handleTeacherRegSubmit(event)" class="space-y-3.5">
+              <div>
+                <label class="block text-xs font-medium text-[#F8FAFC] mb-1">Full Name</label>
+                <input type="text" required placeholder="Prof. Sarah Jenkins" value="Dr. Aris Thorne"
+                  class="w-full bg-[#1E293B] border border-[#334155] text-sm text-[#F8FAFC] rounded-xl px-4 py-2.5 placeholder-[#94A3B8]/60 focus:outline-none focus:border-[#6366F1]">
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium text-[#F8FAFC] mb-1">Institutional Email</label>
+                <input type="email" required placeholder="prof.thorne@mit.edu" value="aris.thorne@institution.edu"
+                  class="w-full bg-[#1E293B] border border-[#334155] text-sm text-[#F8FAFC] rounded-xl px-4 py-2.5 placeholder-[#94A3B8]/60 focus:outline-none focus:border-[#6366F1]">
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-medium text-[#F8FAFC] mb-1">Password</label>
+                  <input type="password" required placeholder="Password" value="Faculty@Evalia2025"
+                    class="w-full bg-[#1E293B] border border-[#334155] text-sm text-[#F8FAFC] rounded-xl px-4 py-2.5 placeholder-[#94A3B8]/60 focus:outline-none focus:border-[#6366F1]">
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-[#F8FAFC] mb-1">Confirm Password</label>
+                  <input type="password" required placeholder="Repeat password" value="Faculty@Evalia2025"
+                    class="w-full bg-[#1E293B] border border-[#334155] text-sm text-[#F8FAFC] rounded-xl px-4 py-2.5 placeholder-[#94A3B8]/60 focus:outline-none focus:border-[#6366F1]">
+                </div>
+              </div>
+
+              <!-- Admin Verification Note -->
+              <div class="p-3 rounded-xl bg-[#F59E0B]/10 border border-[#F59E0B]/30 text-xs text-[#F59E0B] flex items-start gap-2.5">
+                <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span><strong>Institutional Compliance:</strong> Educator accounts require manual validation by your institutional administrator before teaching credentials activate.</span>
+              </div>
+
+              <button type="submit" class="w-full bg-[#6366F1] hover:bg-[#5558E6] text-[#F8FAFC] font-heading font-medium text-sm py-3 px-4 rounded-xl transition-all glow-indigo">
+                Submit Registration
+              </button>
+            </form>
+
+            <div class="mt-5 text-center text-xs text-[#94A3B8]">
+              Already verified?
+              <button type="button" onclick="switchScreen('login')" class="text-[#6366F1] hover:text-[#8B5CF6] font-medium ml-1 underline">Sign in</button>
+            </div>
+          </div>
+
+          <!-- ================= SCREEN 4: TEACHER REGISTRATION PENDING APPROVAL ================= -->
+          <div id="screen-teacher-pending" class="screen-view hidden transition-opacity duration-300 py-4 text-center">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-[#F59E0B]/10 border border-[#F59E0B]/40 flex items-center justify-center text-[#F59E0B] mb-5 shadow-lg shadow-[#F59E0B]/10">
+              <svg class="w-8 h-8 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E293B] border border-[#334155] text-xs font-medium text-[#F59E0B] mb-3">
+              Application Ref: #EV-TEA-9284
+            </div>
+
+            <h2 class="font-heading font-bold text-2xl text-[#F8FAFC] tracking-tight">Registration Submitted</h2>
+            <p class="text-xs sm:text-sm text-[#94A3B8] max-w-md mx-auto mt-2 leading-relaxed">
+              Your teacher account is awaiting administrator approval. You'll be able to access Evalia once your faculty credentials have been verified by your institution.
+            </p>
+
+            <!-- Status Step Visual -->
+            <div class="mt-6 p-4 rounded-xl bg-[#0F172A] border border-[#334155] text-left space-y-3">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-[#94A3B8]">Submission Timestamp:</span>
+                <span class="font-mono text-[#F8FAFC]">Today, 10:42 AM</span>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-[#94A3B8]">Verification SLA:</span>
+                <span class="text-[#10B981] font-medium">Estimated &lt; 24 Hours</span>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-[#94A3B8]">Target Role:</span>
+                <span class="text-[#8B5CF6] font-medium">Faculty Examiner</span>
+              </div>
+            </div>
+
+            <div class="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button type="button" onclick="switchScreen('login')" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#1E293B] hover:bg-[#334155] border border-[#334155] text-xs font-medium text-[#F8FAFC] transition-colors">
+                Return to Login
+              </button>
+              <button type="button" onclick="switchScreen('success-redirect')" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#6366F1]/20 hover:bg-[#6366F1]/30 border border-[#6366F1]/50 text-xs font-medium text-[#F8FAFC] transition-colors">
+                Simulate Admin Approval →
+              </button>
+            </div>
+          </div>
+
+          <!-- ================= SCREEN 5: FORGOT PASSWORD ================= -->
+          <div id="screen-forgot-password" class="screen-view hidden transition-opacity duration-300">
+            <div class="mb-6">
+              <button type="button" onclick="switchScreen('login')" class="inline-flex items-center gap-1.5 text-xs text-[#94A3B8] hover:text-[#F8FAFC] mb-4 transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Back to Sign In</span>
+              </button>
+              <h1 class="font-heading font-bold text-2xl text-[#F8FAFC] tracking-tight">Forgot your password?</h1>
+              <p class="text-xs sm:text-sm text-[#94A3B8] mt-1.5 leading-relaxed">
+                Enter your institutional or student email address and we'll help you securely reset your password.
+              </p>
+            </div>
+
+            <form onsubmit="handleForgotPasswordSubmit(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-medium text-[#F8FAFC] mb-1.5">Registered Email</label>
+                <input type="email" id="forgot-email-input" required placeholder="Enter your registered email" value="alex.morrison@evalia.edu"
+                  class="w-full bg-[#1E293B] border border-[#334155] text-sm text-[#F8FAFC] rounded-xl px-4 py-3 placeholder-[#94A3B8]/60 focus:outline-none focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]">
+              </div>
+
+              <button type="submit" class="w-full bg-[#6366F1] hover:bg-[#5558E6] text-[#F8FAFC] font-heading font-medium text-sm py-3.5 px-4 rounded-xl transition-all glow-indigo">
+                Send Verification Code
+              </button>
+            </form>
+
+            <div class="mt-6 p-3 rounded-xl bg-[#080B12] border border-[#334155]/60 text-xs text-[#94A3B8] flex items-center gap-2">
+              <svg class="w-4 h-4 text-[#8B5CF6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <span>Encrypted one-time passcode with 10-minute expiry will be dispatched.</span>
+            </div>
+          </div>
+
+          <!-- ================= SCREEN 6: OTP VERIFICATION ================= -->
+          <div id="screen-otp-verify" class="screen-view hidden transition-opacity duration-300">
+            <div class="mb-6">
+              <button type="button" onclick="switchScreen('forgot-password')" class="inline-flex items-center gap-1.5 text-xs text-[#94A3B8] hover:text-[#F8FAFC] mb-4 transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Back</span>
+              </button>
+              <h1 class="font-heading font-bold text-2xl text-[#F8FAFC] tracking-tight">Verify your email</h1>
+              <p class="text-xs sm:text-sm text-[#94A3B8] mt-1.5 leading-relaxed">
+                Enter the 6-digit verification code sent to <span class="text-[#F8FAFC] font-medium" id="otp-target-email">alex.morrison@evalia.edu</span>
+              </p>
+            </div>
+
+            <form onsubmit="handleOtpSubmit(event)" class="space-y-6">
+              <!-- 6-Box OTP Inputs -->
+              <div class="flex items-center justify-between gap-2 sm:gap-3">
+                <input type="text" maxlength="1" value="7" class="otp-digit w-11 sm:w-14 h-12 sm:h-14 bg-[#1E293B] border border-[#334155] rounded-xl text-center text-lg sm:text-xl font-bold font-mono text-[#F8FAFC] focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/30 focus:outline-none">
+                <input type="text" maxlength="1" value="4" class="otp-digit w-11 sm:w-14 h-12 sm:h-14 bg-[#1E293B] border border-[#334155] rounded-xl text-center text-lg sm:text-xl font-bold font-mono text-[#F8FAFC] focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/30 focus:outline-none">
+                <input type="text" maxlength="1" value="9" class="otp-digit w-11 sm:w-14 h-12 sm:h-14 bg-[#1E293B] border border-[#334155] rounded-xl text-center text-lg sm:text-xl font-bold font-mono text-[#F8FAFC] focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/30 focus:outline-none">
+                <input type="text" maxlength="1" value="2" class="otp-digit w-11 sm:w-14 h-12 sm:h-14 bg-[#1E293B] border border-[#334155] rounded-xl text-center text-lg sm:text-xl font-bold font-mono text-[#F8FAFC] focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/30 focus:outline-none">
+                <input type="text" maxlength="1" value="8" class="otp-digit w-11 sm:w-14 h-12 sm:h-14 bg-[#1E293B] border border-[#334155] rounded-xl text-center text-lg sm:text-xl font-bold font-mono text-[#F8FAFC] focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/30 focus:outline-none">
+                <input type="text" maxlength="1" value="5" class="otp-digit w-11 sm:w-14 h-12 sm:h-14 bg-[#1E293B] border border-[#334155] rounded-xl text-center text-lg sm:text-xl font-bold font-mono text-[#F8FAFC] focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/30 focus:outline-none">
+              </div>
+
+              <!-- Resend Timer -->
+              <div class="flex items-center justify-between text-xs text-[#94A3B8]">
+                <span>Didn't receive code?</span>
+                <button type="button" id="resend-otp-btn" class="text-[#6366F1] hover:text-[#8B5CF6] font-medium transition-colors focus:outline-none">
+                  Resend code (00:48)
+                </button>
+              </div>
+
+              <button type="submit" class="w-full bg-[#6366F1] hover:bg-[#5558E6] text-[#F8FAFC] font-heading font-medium text-sm py-3.5 px-4 rounded-xl transition-all glow-indigo">
+                Verify Code
+              </button>
+            </form>
+          </div>
+
+          <!-- ================= SCREEN 7: RESET PASSWORD ================= -->
+          <div id="screen-reset-password" class="screen-view hidden transition-opacity duration-300">
+            <div class="mb-6">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#10B981]/10 border border-[#10B981]/30 text-[11px] font-medium text-[#10B981] mb-2">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Email verified
+              </div>
+              <h1 class="font-heading font-bold text-2xl text-[#F8FAFC] tracking-tight">Create a new password</h1>
+              <p class="text-xs sm:text-sm text-[#94A3B8] mt-1.5">
+                Set a strong password for your Evalia institutional profile.
+              </p>
+            </div>
+
+            <form onsubmit="handleResetPasswordSubmit(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-medium text-[#F8FAFC] mb-1.5">New Password</label>
+                <div class="relative">
+                  <input type="password" id="new-password" oninput="checkPasswordStrength(this.value)" required placeholder="Enter new password" value="Evalia2026!Secure"
+                    class="w-full bg-[#1E293B] border border-[#334155] text-sm text-[#F8FAFC] rounded-xl px-4 py-3 placeholder-[#94A3B8]/60 focus:outline-none focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]">
+                </div>
+                <!-- Strength Indicator -->
+                <div class="mt-2 space-y-1">
+                  <div class="flex items-center justify-between text-[11px]">
+                    <span class="text-[#94A3B8]">Security rating</span>
+                    <span id="strength-label" class="text-[#10B981] font-medium">Strong (96%)</span>
+                  </div>
+                  <div class="w-full h-1.5 bg-[#1E293B] rounded-full overflow-hidden flex gap-1">
+                    <div class="h-full w-1/4 bg-[#10B981] rounded-full"></div>
+                    <div class="h-full w-1/4 bg-[#10B981] rounded-full"></div>
+                    <div class="h-full w-1/4 bg-[#10B981] rounded-full"></div>
+                    <div class="h-full w-1/4 bg-[#10B981] rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium text-[#F8FAFC] mb-1.5">Confirm New Password</label>
+                <input type="password" required placeholder="Repeat new password" value="Evalia2026!Secure"
+                  class="w-full bg-[#1E293B] border border-[#334155] text-sm text-[#F8FAFC] rounded-xl px-4 py-3 placeholder-[#94A3B8]/60 focus:outline-none focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]">
+              </div>
+
+              <button type="submit" class="w-full bg-[#6366F1] hover:bg-[#5558E6] text-[#F8FAFC] font-heading font-medium text-sm py-3.5 px-4 rounded-xl transition-all glow-indigo">
+                Reset Password
+              </button>
+            </form>
+          </div>
+
+          <!-- ================= SCREEN 8: AUTHENTICATION SUCCESS / REDIRECT STATE ================= -->
+          <div id="screen-success-redirect" class="screen-view hidden transition-opacity duration-300 py-6 text-center">
+            <!-- Animated Ambient Aura Checkmark -->
+            <div class="relative w-20 h-20 mx-auto mb-5 flex items-center justify-center">
+              <div class="absolute inset-0 rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] opacity-30 blur-xl animate-pulse"></div>
+              <div class="relative w-16 h-16 rounded-full bg-[#0F172A] border border-[#10B981]/50 flex items-center justify-center shadow-2xl">
+                <svg class="w-8 h-8 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+
+            <h2 class="font-heading font-bold text-2xl sm:text-3xl text-[#F8FAFC] tracking-tight">You're all set.</h2>
+            <p class="text-sm text-[#94A3B8] mt-2">Welcome to Evalia.</p>
+
+            <!-- Authenticated Profile Card -->
+            <div class="mt-6 p-4 rounded-xl bg-[#0F172A] border border-[#334155] max-w-sm mx-auto text-left flex items-center gap-3.5">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center text-white font-heading font-bold text-sm">
+                JD
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-medium text-[#F8FAFC] truncate">Jordan Diaz</span>
+                  <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-[#6366F1]/20 text-[#6366F1] font-semibold">STUDENT</span>
+                </div>
+                <p class="text-xs text-[#94A3B8] truncate">jordan.diaz@student.edu</p>
+              </div>
+            </div>
+
+            <!-- Auto-redirect progress bar -->
+            <div class="mt-6 max-w-sm mx-auto">
+              <div class="flex items-center justify-between text-xs text-[#94A3B8] mb-1.5">
+                <span class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#10B981] animate-ping"></span>
+                  Transitioning to workspace...
+                </span>
+                <span class="font-mono text-[#F8FAFC]">Redirecting</span>
+              </div>
+              <div class="w-full h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full w-4/5 animate-pulse"></div>
+              </div>
+            </div>
+
+            <div class="mt-6 flex justify-center gap-3">
+              <button type="button" onclick="switchScreen('login')" class="px-5 py-2 rounded-lg text-xs text-[#94A3B8] hover:text-[#F8FAFC] transition-colors border border-[#334155] hover:bg-[#1E293B]">
+                Revisit Sign In
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Security & Compliance Footer Tagline -->
+        <div class="mt-5 flex items-center justify-between px-2 text-[11px] text-[#94A3B8]">
+          <span class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            256-Bit Sovereign Cryptographic Session
+          </span>
+          <span>Zero Paywall • Always Free</span>
+        </div>
+      </div>
+
+
+      <!-- ================= RIGHT SIDE: SOPHISTICATED EVALIA AI 3D ENVIRONMENT ================= -->
+      <div class="lg:col-span-6 w-full flex flex-col items-center justify-center relative order-2 py-6 lg:py-0">
+        
+        <!-- Central 3D Visual Atmosphere Composition -->
+        <div class="relative w-full max-w-[460px] aspect-square flex items-center justify-center">
+          
+          <!-- Outer Orbital Rings with subtle rotational dash -->
+          <div class="absolute inset-0 rounded-full border border-[#334155]/40 animate-pulse-slow"></div>
+          <div class="absolute inset-8 rounded-full border border-dashed border-[#6366F1]/30"></div>
+          <div class="absolute inset-20 rounded-full border border-[#8B5CF6]/20"></div>
+
+          <!-- Ambient Radial Background Glow -->
+          <div class="absolute w-72 h-72 rounded-full bg-gradient-to-tr from-[#6366F1]/20 via-[#8B5CF6]/25 to-[#3B82F6]/10 blur-[60px] pointer-events-none"></div>
+
+          <!-- Central Glowing Evalia AI Neural Core -->
+          <div class="relative z-10 w-32 h-32 rounded-3xl bg-gradient-to-br from-[#1E293B] via-[#0F172A] to-[#080B12] border border-[#6366F1]/60 p-1 glow-core flex items-center justify-center transform transition-transform hover:scale-105 duration-500 group cursor-default">
+            <div class="w-full h-full rounded-[22px] bg-[#080B12]/90 backdrop-blur-md flex flex-col items-center justify-center relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-tr from-[#6366F1]/20 to-transparent opacity-60"></div>
+              
+              <!-- Monogram E-Symbol with pulsating core dot -->
+              <div class="relative z-10 w-12 h-12 rounded-xl bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center shadow-lg shadow-[#6366F1]/40">
+                <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 6h16M4 12h10M4 18h16" />
+                  <circle cx="19" cy="12" r="2.5" fill="#8B5CF6" stroke="none" class="animate-ping" />
+                </svg>
+              </div>
+              <span class="relative z-10 text-[10px] font-heading font-semibold text-[#F8FAFC] tracking-widest mt-2 uppercase">Neural Core</span>
+            </div>
+          </div>
+
+          <!-- Floating Satellite Card 1: AI Evaluation (Top Right) -->
+          <div class="absolute -top-3 -right-2 sm:right-2 z-20 bg-[#151B28]/90 border border-[#8B5CF6]/40 rounded-2xl p-3.5 shadow-2xl backdrop-blur-xl animate-float-slow w-48 sm:w-52">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[#8B5CF6] uppercase tracking-wider">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#8B5CF6] animate-pulse"></span>
+                AI Evaluation
+              </span>
+              <span class="text-xs font-heading font-bold text-[#10B981]">92%</span>
+            </div>
+            <div class="text-[11px] text-[#F8FAFC] font-medium leading-snug">Semantic Relevance</div>
+            <div class="w-full h-1 bg-[#1E293B] rounded-full mt-2 overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-[#6366F1] to-[#10B981] rounded-full w-[92%]"></div>
+            </div>
+          </div>
+
+          <!-- Floating Satellite Card 2: Exam Security (Bottom Left) -->
+          <div class="absolute -bottom-2 -left-2 sm:left-2 z-20 bg-[#151B28]/90 border border-[#10B981]/40 rounded-2xl p-3.5 shadow-2xl backdrop-blur-xl animate-float-delayed w-44 sm:w-48">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[#10B981] uppercase tracking-wider">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                Lockdown
+              </span>
+              <span class="text-[10px] text-[#10B981] font-mono font-bold">ACTIVE</span>
+            </div>
+            <div class="text-[11px] text-[#F8FAFC] font-medium">Exam Security</div>
+            <p class="text-[10px] text-[#94A3B8] mt-0.5">Biometric & tab switch calibrated</p>
+          </div>
+
+          <!-- Floating Satellite Card 3: Performance Mastery (Bottom Right) -->
+          <div class="absolute bottom-12 -right-4 sm:right-0 z-20 bg-[#151B28]/90 border border-[#6366F1]/40 rounded-2xl p-3 shadow-2xl backdrop-blur-xl animate-float-slow w-40">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[10px] text-[#94A3B8] font-medium">Performance</span>
+              <span class="text-xs font-heading font-bold text-[#F8FAFC]">87%</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <div class="w-2 h-4 bg-[#6366F1]/40 rounded-sm"></div>
+              <div class="w-2 h-6 bg-[#6366F1]/60 rounded-sm"></div>
+              <div class="w-2 h-5 bg-[#6366F1]/50 rounded-sm"></div>
+              <div class="w-2 h-8 bg-[#6366F1] rounded-sm"></div>
+              <div class="w-2 h-7 bg-[#8B5CF6] rounded-sm"></div>
+            </div>
+          </div>
+
+          <!-- Subtle Starfield / Particle nodes -->
+          <div class="absolute top-1/4 left-8 w-1.5 h-1.5 rounded-full bg-[#8B5CF6] opacity-75 animate-ping"></div>
+          <div class="absolute bottom-1/3 right-10 w-1 h-1 rounded-full bg-[#3B82F6] opacity-60"></div>
+          <div class="absolute top-10 left-1/3 w-1 h-1 rounded-full bg-white opacity-40"></div>
+        </div>
+
+        <!-- Right-Side Message Typography -->
+        <div class="mt-8 text-center max-w-sm px-4">
+          <h2 class="font-heading font-bold text-xl sm:text-2xl text-[#F8FAFC] tracking-tight">One intelligent platform.</h2>
+          <p class="text-xs sm:text-sm text-[#94A3B8] mt-2 leading-relaxed">
+            Learn, teach, assess and monitor — powered by sovereign AI architecture.
+          </p>
+
+          <!-- Core Capability Badges -->
+          <div class="mt-5 flex flex-wrap items-center justify-center gap-2">
+            <span class="px-2.5 py-1 rounded-lg bg-[#1E293B]/70 border border-[#334155]/60 text-[11px] text-[#F8FAFC]">
+              ⚡ Adaptive Quiz Engine
+            </span>
+            <span class="px-2.5 py-1 rounded-lg bg-[#1E293B]/70 border border-[#334155]/60 text-[11px] text-[#F8FAFC]">
+              🛡️ Live Proctoring
+            </span>
+            <span class="px-2.5 py-1 rounded-lg bg-[#1E293B]/70 border border-[#334155]/60 text-[11px] text-[#F8FAFC]">
+              📊 Semantic Grading
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Script for Tab Switching and Dynamic State Handling -->
+  <script>
+    function switchScreen(screenKey) {
+      // Hide all screen views
+      const views = document.querySelectorAll('.screen-view');
+      views.forEach(v => v.classList.add('hidden'));
+
+      // Show targeted view
+      const target = document.getElementById('screen-' + screenKey);
+      if (target) {
+        target.classList.remove('hidden');
+      }
+
+      // Update active tab buttons
+      const buttons = document.querySelectorAll('#screen-tabs .tab-btn');
+      buttons.forEach(btn => {
+        if (btn.getAttribute('data-screen') === screenKey) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.innerHTML = `<svg class="w-4 h-4 text-[#6366F1]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+        </svg>`;
+      } else {
+        input.type = 'password';
+        btn.innerHTML = `<svg class="w-4 h-4 text-[#94A3B8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>`;
+      }
+    }
+
+    function toggleLoginError() {
+      const el = document.getElementById('login-error');
+      if (el) el.classList.toggle('hidden');
+    }
+
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('login-submit-btn');
+      const text = document.getElementById('login-btn-text');
+      const icon = document.getElementById('login-btn-icon');
+      const spinner = document.getElementById('login-btn-spinner');
+
+      btn.disabled = true;
+      text.textContent = 'Signing in...';
+      icon.classList.add('hidden');
+      spinner.classList.remove('hidden');
+
+      setTimeout(() => {
+        btn.disabled = false;
+        text.textContent = 'Sign In';
+        icon.classList.remove('hidden');
+        spinner.classList.add('hidden');
+        switchScreen('success-redirect');
+      }, 1000);
+    }
+
+    function simulateLoginSuccess() {
+      switchScreen('success-redirect');
+    }
+
+    function simulateGoogleAuth() {
+      const btn = event.currentTarget;
+      btn.innerHTML = `<div class="w-4 h-4 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin"></div><span>Connecting Google Account...</span>`;
+      setTimeout(() => {
+        switchScreen('success-redirect');
+      }, 900);
+    }
+
+    function handleStudentRegSubmit(e) {
+      e.preventDefault();
+      switchScreen('success-redirect');
+    }
+
+    function handleTeacherRegSubmit(e) {
+      e.preventDefault();
+      switchScreen('teacher-pending');
+    }
+
+    function handleForgotPasswordSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('forgot-email-input').value;
+      document.getElementById('otp-target-email').textContent = email || 'alex.morrison@evalia.edu';
+      switchScreen('otp-verify');
+    }
+
+    function handleOtpSubmit(e) {
+      e.preventDefault();
+      switchScreen('reset-password');
+    }
+
+    function handleResetPasswordSubmit(e) {
+      e.preventDefault();
+      switchScreen('success-redirect');
+    }
+
+    function checkPasswordStrength(val) {
+      const label = document.getElementById('strength-label');
+      if (!label) return;
+      if (val.length < 6) {
+        label.textContent = 'Weak (32%)';
+        label.className = 'text-[#EF4444] font-medium';
+      } else if (val.length < 10) {
+        label.textContent = 'Moderate (68%)';
+        label.className = 'text-[#F59E0B] font-medium';
+      } else {
+        label.textContent = 'Strong (96%)';
+        label.className = 'text-[#10B981] font-medium';
+      }
+    }
+
+    // Auto focus next OTP box
+    document.querySelectorAll('.otp-digit').forEach((input, index, inputs) => {
+      input.addEventListener('keyup', (e) => {
+        if (e.key >= '0' && e.key <= '9') {
+          if (index < inputs.length - 1) inputs[index + 1].focus();
+        } else if (e.key === 'Backspace') {
+          if (index > 0) inputs[index - 1].focus();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

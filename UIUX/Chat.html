@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Evalia AI — Academic Content Studio</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-container": "#cdd7ff",
+            "on-secondary": "#002a78",
+            "on-primary-fixed-variant": "#3323cc",
+            "on-primary-container": "#dad7ff",
+            "surface-tint": "#c3c0ff",
+            "on-surface": "#e0e2ed",
+            "surface-variant": "#32353d",
+            "surface-container-highest": "#32353d",
+            "on-secondary-fixed-variant": "#003ea8",
+            "primary-container": "#4f46e5",
+            "surface-bright": "#363941",
+            "tertiary": "#d2bbff",
+            "on-primary": "#1d00a5",
+            "inverse-on-surface": "#2d3038",
+            "on-error-container": "#ffdad6",
+            "on-tertiary-container": "#e4d4ff",
+            "surface-container-low": "#181b23",
+            "on-secondary-fixed": "#00174b",
+            "outline": "#918fa1",
+            "on-background": "#e0e2ed",
+            "inverse-primary": "#4d44e3",
+            "inverse-surface": "#e0e2ed",
+            "surface-container-lowest": "#0b0e15",
+            "tertiary-fixed": "#eaddff",
+            "error": "#ffb4ab",
+            "secondary-fixed-dim": "#b4c5ff",
+            "surface-dim": "#10131b",
+            "primary-fixed": "#e2dfff",
+            "secondary": "#b4c5ff",
+            "surface-container-high": "#272a32",
+            "secondary-fixed": "#dbe1ff",
+            "on-surface-variant": "#c7c4d8",
+            "primary": "#c3c0ff",
+            "background": "#10131b",
+            "tertiary-container": "#7531e6",
+            "on-tertiary-fixed": "#25005a",
+            "on-error": "#690005",
+            "surface-container": "#1d2027",
+            "outline-variant": "#464555",
+            "on-tertiary-fixed-variant": "#5a00c6",
+            "surface": "#10131b",
+            "error-container": "#93000a",
+            "primary-fixed-dim": "#c3c0ff",
+            "on-tertiary": "#3f008e",
+            "secondary-container": "#0053db",
+            "on-primary-fixed": "#0f0069",
+            "tertiary-fixed-dim": "#d2bbff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xl": "2.5rem",
+            "margin": "2.5rem",
+            "gutter-mobile": "1rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1.5rem",
+            "margin-mobile": "1.25rem",
+            "gutter": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "body-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "display-hero-mobile": ["Space Grotesk"],
+            "headline-xl-mobile": ["Space Grotesk"],
+            "headline-lg": ["Space Grotesk"],
+            "display-hero": ["Space Grotesk"],
+            "headline-sm": ["Space Grotesk"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "body-xl": ["Inter"],
+            "label-md": ["Plus Jakarta Sans"],
+            "code-mono": ["Space Grotesk"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "headline-md": ["Space Grotesk"],
+            "headline-xl": ["Space Grotesk"]
+          },
+          "fontSize": {
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "display-hero-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-xl-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "display-hero": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "700" }],
+            "body-xl": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "code-mono": ["13px", { "lineHeight": "18px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.025em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .glass-specular {
+      border: 1px solid transparent;
+      border-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02)) 1;
+    }
+    .neural-glow {
+      box-shadow: 0 0 32px -4px rgba(124, 58, 237, 0.25);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(145, 143, 161, 0.2);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(145, 143, 161, 0.4);
+    }
+  </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body-md antialiased overflow-hidden select-none">
+<div class="flex h-screen w-screen bg-surface-container-lowest text-on-surface overflow-hidden">
+<!-- 1. PRIMARY TEACHER LEFT NAVIGATION (Narrower primary rail) -->
+<aside class="w-64 flex-shrink-0 bg-surface-container-low flex flex-col border-r border-outline-variant/30 z-30">
+<!-- Brand & Platform Tag -->
+<div class="h-16 px-5 flex items-center justify-between border-b border-outline-variant/20">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-primary-container/20 border border-primary/40 flex items-center justify-center text-primary shadow-[0_0_16px_rgba(79,70,229,0.35)]">
+<span class="material-symbols-outlined text-[20px]" data-icon="neurology">neurology</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface tracking-tight leading-none">Evalia</span>
+<span class="font-label-sm text-label-sm text-primary tracking-wider mt-1 uppercase">Teacher Studio</span>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors p-1" title="Workspace Settings">
+<span class="material-symbols-outlined text-[18px]" data-icon="tune">tune</span>
+</button>
+</div>
+<!-- Navigation Hierarchy Scroller -->
+<div class="flex-1 overflow-y-auto custom-scrollbar px-3 py-4 space-y-6">
+<!-- Main Links -->
+<div>
+<div class="px-3 mb-2 font-label-sm text-label-sm text-outline tracking-wider uppercase">Main</div>
+<nav class="space-y-0.5">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all duration-150 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all duration-150 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="menu_book">menu_book</span>
+<span>Courses</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all duration-150 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="folder_special">folder_special</span>
+<span>Learning Materials</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all duration-150 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="assignment">assignment</span>
+<span>Assignments</span>
+</a>
+</nav>
+</div>
+<!-- Assessment & AI Tools (Active Group) -->
+<div>
+<div class="px-3 mb-2 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline tracking-wider uppercase">Assessment &amp; AI</span>
+<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-tertiary-container/30 text-tertiary border border-tertiary/20">V3.2</span>
+</div>
+<nav class="space-y-0.5">
+<!-- AI Chat (ACTIVE ITEM) -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg bg-primary-container/20 text-primary border border-primary/30 font-label-md text-label-md shadow-[0_0_16px_rgba(79,70,229,0.2)]" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]" data-icon="smart_toy">smart_toy</span>
+<span class="font-semibold text-white">AI Chat</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all duration-150 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="quiz">quiz</span>
+<span>Quiz Generator</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all duration-150 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="history_edu">history_edu</span>
+<span>Examinations</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all duration-150 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="rate_review">rate_review</span>
+<span>AI Evaluation</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all duration-150 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="security">security</span>
+<span>Proctoring Dashboard</span>
+</a>
+</nav>
+</div>
+<!-- Analytics -->
+<div>
+<div class="px-3 mb-2 font-label-sm text-label-sm text-outline tracking-wider uppercase">Telemetry</div>
+<nav class="space-y-0.5">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all duration-150 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="analytics">analytics</span>
+<span>Academic Analytics</span>
+</a>
+</nav>
+</div>
+</div>
+<!-- Teacher Profile Footer -->
+<div class="p-3 border-t border-outline-variant/20 bg-surface-container-lowest/60">
+<div class="flex items-center gap-3 p-2 rounded-xl bg-surface-container/60 border border-outline-variant/20">
+<div class="relative">
+<img class="w-9 h-9 rounded-lg object-cover border border-primary/30" data-alt="Close up photographic headshot portrait of Dr Alex Morgan, a distinguished professor with silver-accented hair wearing professional minimalist slate glasses and charcoal blazer, natural studio lighting with dark cinematic background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARHV9i_7jxMPWI_aZ5qrrrS5Nec1eNmzdrTSfAwrB5yBqZVA0-mVfpjo-6tFMihUOwWackHJYCfyupwr7H6c1KunMqhbNKTXn7J49pagpxv7Rk5cCjhG_Wy8ctZ-c9gI-ohYA0nbMajdMIj8e3-ca2xCthmWJjj0kPL16zmhz7Di9NMTXTHAGhoq-DDoHPHK0wB8VYnhgBkuJEFgyBupdqE4eH2SfvGa27Adg6rhfCInN_rdRlPX9_"/>
+<span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-surface-container-lowest"></span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-label-md text-label-md font-semibold text-on-surface truncate">Dr. Alex Morgan</p>
+<p class="font-body-sm text-body-sm text-outline truncate">Computer Science</p>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface p-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- 2. SECONDARY LEFT SIDEBAR: Chat History & Academic Course Context -->
+<aside class="w-80 flex-shrink-0 bg-surface-container flex flex-col border-r border-outline-variant/30 z-20">
+<!-- Action & Search Section -->
+<div class="p-4 border-b border-outline-variant/20 space-y-3">
+<button class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-primary-container hover:bg-primary-container/90 text-white font-label-md text-label-md transition-all duration-150 shadow-[0_4px_16px_rgba(79,70,229,0.35)] active:scale-[0.99]">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+<span>+ New Chat</span>
+</button>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]" data-icon="search">search</span>
+<input class="w-full pl-9 pr-3 py-1.5 rounded-lg bg-surface-container-lowest/80 border border-outline-variant/30 text-on-surface placeholder-outline font-body-sm text-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/40" placeholder="Search history &amp; prompts..." type="text"/>
+</div>
+</div>
+<!-- Academic Context Selector (Course / Module / Level) -->
+<div class="px-4 py-3 bg-surface-container-low/50 border-b border-outline-variant/20 space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline tracking-wider uppercase">Active Course Context</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+</div>
+<div class="space-y-1.5">
+<!-- Course Dropdown -->
+<div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-surface-container-lowest/70 border border-outline-variant/30 hover:border-outline-variant transition-colors cursor-pointer">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="school">school</span>
+<div class="truncate">
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider text-[10px]">Course</p>
+<p class="font-label-md text-label-md text-on-surface truncate">CS-401 Artificial Intelligence</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-[16px] text-outline" data-icon="expand_more">expand_more</span>
+</div>
+<!-- Module & Level Dual Row -->
+<div class="grid grid-cols-2 gap-1.5">
+<div class="px-2.5 py-1.5 rounded-lg bg-surface-container-lowest/70 border border-outline-variant/30 hover:border-outline-variant cursor-pointer">
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider text-[10px]">Module</p>
+<p class="font-label-md text-label-md text-on-surface truncate">Search Techniques</p>
+</div>
+<div class="px-2.5 py-1.5 rounded-lg bg-surface-container-lowest/70 border border-outline-variant/30 hover:border-outline-variant cursor-pointer">
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider text-[10px]">Level</p>
+<p class="font-label-md text-label-md text-primary font-semibold truncate">Graduate</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Library Tabs -->
+<div class="flex border-b border-outline-variant/20 px-2 pt-2 bg-surface-container-low/30">
+<button class="flex-1 pb-2 border-b-2 border-primary text-primary font-label-md text-label-md text-center">Chats</button>
+<button class="flex-1 pb-2 border-b-2 border-transparent text-outline hover:text-on-surface font-label-md text-label-md text-center transition-colors">Question Sets</button>
+<button class="flex-1 pb-2 border-b-2 border-transparent text-outline hover:text-on-surface font-label-md text-label-md text-center transition-colors">Lecture Decks</button>
+</div>
+<!-- Recent Chat Threads -->
+<div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-4">
+<!-- Today Group -->
+<div>
+<span class="px-2 font-label-sm text-label-sm text-outline uppercase tracking-wider">Today</span>
+<div class="mt-2 space-y-1">
+<!-- Active Thread Item -->
+<div class="p-2.5 rounded-xl bg-surface-container-high border border-primary/30 relative cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="chat_bubble">chat_bubble</span>
+<p class="font-label-md text-label-md text-on-surface font-semibold truncate">Search Algorithms Assessment</p>
+</div>
+<span class="text-[10px] text-outline flex-shrink-0">Just now</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate mt-1 pl-6">15 questions generated • Bloom: Apply</p>
+<div class="flex items-center gap-2 mt-2 pl-6">
+<span class="px-1.5 py-0.5 rounded text-[10px] bg-primary/10 text-primary border border-primary/20">CS-401</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">A* Search</span>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="p-2.5 rounded-xl hover:bg-surface-container-high/60 border border-transparent hover:border-outline-variant/30 transition-all cursor-pointer">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-outline" data-icon="chat_bubble_outline">chat_bubble_outline</span>
+<p class="font-label-md text-label-md text-on-surface truncate">Heuristics Problem Set</p>
+</div>
+<span class="text-[10px] text-outline flex-shrink-0">3h ago</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline truncate mt-1 pl-6">Admissibility proofs &amp; Manhattan distances</p>
+</div>
+</div>
+</div>
+<!-- Yesterday Group -->
+<div>
+<span class="px-2 font-label-sm text-label-sm text-outline uppercase tracking-wider">Yesterday</span>
+<div class="mt-2 space-y-1">
+<div class="p-2.5 rounded-xl hover:bg-surface-container-high/60 border border-transparent hover:border-outline-variant/30 transition-all cursor-pointer">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-outline" data-icon="chat_bubble_outline">chat_bubble_outline</span>
+<p class="font-label-md text-label-md text-on-surface truncate">Lecture Notes on Intelligent Agents</p>
+</div>
+<span class="text-[10px] text-outline flex-shrink-0">21h ago</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline truncate mt-1 pl-6">PEAS analysis framework summary</p>
+</div>
+<div class="p-2.5 rounded-xl hover:bg-surface-container-high/60 border border-transparent hover:border-outline-variant/30 transition-all cursor-pointer">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-outline" data-icon="chat_bubble_outline">chat_bubble_outline</span>
+<p class="font-label-md text-label-md text-on-surface truncate">Midterm Examination Blueprint</p>
+</div>
+<span class="text-[10px] text-outline flex-shrink-0">Yesterday</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline truncate mt-1 pl-6">Question distribution matrix</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- 3. CENTRAL AI CONTENT WORKSPACE (Main Canvas & Interaction Area) -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface-container-lowest relative overflow-hidden">
+<!-- Top Header Bar -->
+<header class="h-16 px-6 border-b border-outline-variant/20 bg-surface-container-lowest/80 backdrop-blur-xl flex items-center justify-between z-10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h1 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Evalia AI — Academic Assistant</h1>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                Institutional Engine Active
+              </span>
+</div>
+<p class="font-body-sm text-body-sm text-outline">Model: Academic-CS-LLM-Pro (Specialized Rubric &amp; Bloom Calibration)</p>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container border border-outline-variant/30 hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors">
+<span class="material-symbols-outlined text-[16px] text-outline" data-icon="save">save</span>
+<span>Save Draft</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container border border-outline-variant/30 hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="quiz">quiz</span>
+<span>Add to Quiz</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary-container text-white hover:bg-primary-container/90 font-label-md text-label-md transition-colors shadow-[0_2px_10px_rgba(79,70,229,0.3)]">
+<span class="material-symbols-outlined text-[16px]" data-icon="history_edu">history_edu</span>
+<span>Add to Exam</span>
+</button>
+<div class="h-6 w-px bg-outline-variant/30 mx-1"></div>
+<button class="p-2 rounded-lg bg-surface-container border border-outline-variant/30 hover:text-primary transition-colors text-outline" title="Export Assessment">
+<span class="material-symbols-outlined text-[18px]" data-icon="file_download">file_download</span>
+</button>
+</div>
+</header>
+<!-- Central Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6 pb-48">
+<!-- Document Analysis Preview Card (Context Attachment) -->
+<div class="p-4 rounded-xl bg-surface-container/60 border border-outline-variant/30 flex items-center justify-between gap-4">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]" data-icon="picture_as_pdf">picture_as_pdf</span>
+</div>
+<div class="truncate">
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md font-semibold text-on-surface truncate">Lecture_Notes_Unit4.pdf</span>
+<span class="px-2 py-0.5 rounded text-[10px] bg-primary/10 text-primary border border-primary/20 font-medium">Uploaded &amp; Analyzed</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline truncate">12 Key concepts recognized (Heuristics, Admissibility, Consistent Graphs, Branching Factors)</p>
+</div>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-high text-on-surface hover:border-primary/50 border border-outline-variant/30 font-label-md text-label-md transition-colors">
+              Generate 10 Questions
+            </button>
+<button class="px-3 py-1.5 rounded-lg bg-tertiary-container/20 text-tertiary hover:bg-tertiary-container/30 border border-tertiary/30 font-label-md text-label-md transition-colors">
+              Create Practice Assignment
+            </button>
+</div>
+</div>
+<!-- Instructor Prompt Bubble -->
+<div class="flex items-start gap-3 max-w-3xl ml-auto">
+<div class="p-4 rounded-2xl bg-surface-container-high border border-outline-variant/30 text-on-surface shadow-md">
+<div class="flex items-center justify-between gap-4 mb-1">
+<span class="font-label-sm text-label-sm text-primary font-semibold uppercase tracking-wider">Instructor Prompt</span>
+<span class="font-body-sm text-body-sm text-outline">10:42 AM</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface leading-relaxed">
+              Generate 15 medium-difficulty assessment questions on A* search algorithms for computer science students. Include 10 multiple-choice questions and 5 conceptual short questions.
+            </p>
+</div>
+<img class="w-8 h-8 rounded-lg object-cover border border-primary/40 flex-shrink-0 mt-1" data-alt="Headshot photo of male academic professor with smart modern attire and dark lighting background representing Dr Alex Morgan" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3jgev8w_D6xM1C-vprgoBBDjPEJWhqL8x_27Wjv9NMQRpVT0WEvSBLxtXo3Rj6sXhOncPjN-skDpyb3fXF5Lu3ZQttrV9z0BX4QBWZRAbTe0Rx_2qbPOhGuJoKFpMnxR1Y8H23zrESFEQNVzhDhQvTXG3ceHY4LeoocpPth9hHtR-u0PuZmFz9_gkPGUmJM6ZFOyDNgl4pSr0zGPivGJarG8SyQ27-HHH95GQMIFUv8IUfWCEXgBy"/>
+</div>
+<!-- AI Generated Response Suite -->
+<div class="flex items-start gap-3 max-w-5xl mr-auto w-full">
+<div class="w-8 h-8 rounded-lg bg-tertiary-container/30 border border-tertiary/40 flex items-center justify-center text-tertiary flex-shrink-0 mt-1 shadow-[0_0_12px_rgba(117,49,230,0.3)]">
+<span class="material-symbols-outlined text-[18px]" data-icon="neurology">neurology</span>
+</div>
+<div class="flex-1 space-y-4">
+<!-- Notice Banner -->
+<div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center gap-3 text-amber-200 shadow-sm">
+<span class="material-symbols-outlined text-[20px] text-amber-400 flex-shrink-0" data-icon="verified_user">verified_user</span>
+<p class="font-body-sm text-body-sm flex-1">
+<strong class="font-semibold text-white">Faculty Review Mandate:</strong> Content requires instructor review and verification before publishing to the live student testing repository.
+              </p>
+<button class="font-label-sm text-label-sm px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-semibold transition-colors">
+                Dismiss
+              </button>
+</div>
+<!-- Content Suite Card & Toolbar -->
+<div class="rounded-2xl bg-surface-container/90 border border-outline-variant/30 overflow-hidden shadow-xl">
+<!-- Toolbar Header -->
+<div class="p-4 bg-surface-container-high/60 border-b border-outline-variant/20 flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="checklist_rtl">checklist_rtl</span>
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface">15 Questions Prepared</span>
+<span class="text-outline text-body-sm">•</span>
+<span class="font-body-sm text-body-sm text-outline">10 Objective Questions + 5 Conceptual Questions</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container hover:bg-surface-bright text-on-surface font-label-md text-label-md border border-outline-variant/30 transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="select_all">select_all</span>
+<span>Select All</span>
+</button>
+<button class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container hover:bg-surface-bright text-on-surface font-label-md text-label-md border border-outline-variant/30 transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="tune">tune</span>
+<span>Adjust Difficulty</span>
+</button>
+<button class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container hover:bg-surface-bright text-on-surface font-label-md text-label-md border border-outline-variant/30 transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="refresh">refresh</span>
+<span>Re-generate</span>
+</button>
+<button class="flex items-center gap-1 px-3 py-1 rounded-lg bg-primary-container text-white font-label-md text-label-md transition-colors shadow-sm hover:brightness-110">
+<span class="material-symbols-outlined text-[16px]" data-icon="add_task">add_task</span>
+<span>Add to Exam</span>
+</button>
+</div>
+</div>
+<!-- Question Cards Container -->
+<div class="p-6 space-y-6">
+<!-- QUESTION 1 (Multiple Choice) -->
+<div class="p-5 rounded-xl bg-surface-container-lowest/80 border border-outline-variant/20 hover:border-primary/40 transition-all duration-200">
+<div class="flex items-start justify-between gap-4 mb-3">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="px-2 py-0.5 rounded bg-primary-container/20 text-primary border border-primary/30 font-label-sm text-label-sm font-bold">Q1 • Multiple Choice</span>
+<span class="px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary border border-tertiary/30 font-label-sm text-label-sm">[Bloom: Apply]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">1 Mark</span>
+<span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-label-sm text-label-sm">Admissibility</span>
+</div>
+<!-- Inline Actions -->
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded-lg hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Edit Question">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Regenerate Item">
+<span class="material-symbols-outlined text-[18px]" data-icon="sync">sync</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-high text-outline hover:text-error transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface font-medium mb-4">
+                    In tree search using the A* algorithm, what mathematical condition must the heuristic function <span class="font-code-mono text-primary">h(n)</span> satisfy to guarantee that the optimal path will always be returned?
+                  </p>
+<!-- MCQ Option List -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+<div class="p-3 rounded-lg bg-surface-container/50 border border-outline-variant/30 flex items-start gap-3">
+<span class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant/40 flex items-center justify-center font-label-md text-label-md text-outline">A</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant pt-0.5">The heuristic value must always be strictly greater than the true remaining path cost <span class="font-code-mono">h*(n)</span>.</span>
+</div>
+<!-- Correct Option -->
+<div class="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/40 flex items-start gap-3 relative shadow-[0_0_12px_rgba(16,185,129,0.1)]">
+<span class="w-6 h-6 rounded-full bg-emerald-500 text-surface-container-lowest flex items-center justify-center font-label-md text-label-md font-bold">B</span>
+<div class="flex-1 min-w-0">
+<span class="font-body-sm text-body-sm text-emerald-200 font-medium pt-0.5 block">The heuristic must be admissible; that is, <span class="font-code-mono">h(n) ≤ h*(n)</span> for all nodes <span class="font-code-mono">n</span>.</span>
+<span class="inline-flex items-center gap-1 mt-1 text-[11px] font-semibold text-emerald-400">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span> Correct Answer Verified
+                        </span>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-surface-container/50 border border-outline-variant/30 flex items-start gap-3">
+<span class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant/40 flex items-center justify-center font-label-md text-label-md text-outline">C</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant pt-0.5">The heuristic must decrease monotonically along all outgoing edges without exception.</span>
+</div>
+<div class="p-3 rounded-lg bg-surface-container/50 border border-outline-variant/30 flex items-start gap-3">
+<span class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant/40 flex items-center justify-center font-label-md text-label-md text-outline">D</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant pt-0.5">The heuristic function must equate to zero for every non-terminal internal node.</span>
+</div>
+</div>
+</div>
+<!-- QUESTION 2 (Conceptual Short Answer) -->
+<div class="p-5 rounded-xl bg-surface-container-lowest/80 border border-outline-variant/20 hover:border-primary/40 transition-all duration-200">
+<div class="flex items-start justify-between gap-4 mb-3">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="px-2 py-0.5 rounded bg-tertiary-container/30 text-tertiary border border-tertiary/40 font-label-sm text-label-sm font-bold">Q2 • Conceptual Short Answer</span>
+<span class="px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary border border-tertiary/30 font-label-sm text-label-sm">[Bloom: Evaluate]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">3 Marks</span>
+<span class="px-2 py-0.5 rounded bg-primary/10 text-primary font-label-sm text-label-sm">Monotonicity</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded-lg hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Edit Question">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-high text-outline hover:text-on-surface transition-colors" title="Regenerate Item">
+<span class="material-symbols-outlined text-[18px]" data-icon="sync">sync</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-high text-outline hover:text-error transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface font-medium mb-3">
+                    Explain why graph search requires a monotonic (consistent) heuristic rather than merely an admissible one to guarantee optimality without reopening closed states. State the triangle inequality formulation.
+                  </p>
+<!-- Grading Rubric Guidelines (AI Evaluator Matrix) -->
+<div class="p-3.5 rounded-lg bg-surface-container/60 border border-outline-variant/30 space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]" data-icon="fact_check">fact_check</span>
+                        Grading Rubric &amp; Benchmark Keys (3 Marks Total)
+                      </span>
+<span class="font-label-sm text-label-sm text-outline">Auto-Gradable via Evalia Matrix</span>
+</div>
+<ul class="text-body-sm font-body-sm text-on-surface-variant space-y-1 list-disc list-inside">
+<li><strong class="text-on-surface">1 Mark:</strong> Correct articulation of triangle inequality: <span class="font-code-mono text-primary">h(n) ≤ c(n, a, n') + h(n')</span> where <span class="font-code-mono">n'</span> is a successor of <span class="font-code-mono">n</span>.</li>
+<li><strong class="text-on-surface">1 Mark:</strong> Demonstration that non-decreasing <span class="font-code-mono">f(n)</span> sequence ensures the first path found to any node is optimal.</li>
+<li><strong class="text-on-surface">1 Mark:</strong> Consequence analysis showing that without consistency, a cheaper path to an already closed node could be discovered later, causing suboptimal outcomes unless states reopen.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. BOTTOM COMPOSER DOCK (Floating Workspace Interaction) -->
+<div class="absolute bottom-4 left-6 right-6 max-w-5xl mx-auto z-40">
+<div class="rounded-2xl bg-surface-container/95 backdrop-blur-2xl border border-outline-variant/40 shadow-[0_20px_50px_rgba(0,0,0,0.85)] p-3">
+<!-- Mode Switcher Pills -->
+<div class="flex items-center gap-2 pb-2.5 mb-2 border-b border-outline-variant/20 overflow-x-auto custom-scrollbar">
+<button class="px-3 py-1 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors font-label-md text-label-md flex items-center gap-1.5 flex-shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="chat">chat</span>
+<span>Ask AI</span>
+</button>
+<button class="px-3 py-1 rounded-lg bg-primary-container text-white font-label-md text-label-md flex items-center gap-1.5 flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="psychology">psychology</span>
+<span>Create Questions</span>
+</button>
+<button class="px-3 py-1 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors font-label-md text-label-md flex items-center gap-1.5 flex-shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="quiz">quiz</span>
+<span>Build Quiz</span>
+</button>
+<button class="px-3 py-1 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors font-label-md text-label-md flex items-center gap-1.5 flex-shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="assignment_add">assignment_add</span>
+<span>Build Assignment</span>
+</button>
+<button class="px-3 py-1 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors font-label-md text-label-md flex items-center gap-1.5 flex-shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="notes">notes</span>
+<span>Generate Notes</span>
+</button>
+</div>
+<!-- Multi-line Input Area -->
+<div class="relative flex items-center">
+<textarea class="w-full bg-transparent border-0 focus:ring-0 text-on-surface placeholder-outline font-body-md text-body-md resize-none py-1.5 px-2 focus:outline-none" placeholder="Ask Evalia AI to draft questions, study notes, or assignment rubrics..." rows="2"></textarea>
+</div>
+<!-- Dock Controls & Helpers -->
+<div class="flex items-center justify-between pt-2 mt-1 border-t border-outline-variant/10">
+<div class="flex items-center gap-2">
+<!-- Helper: Attach Course Document -->
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors border border-outline-variant/30">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="attach_file">attach_file</span>
+<span>Attach Course Document</span>
+</button>
+<!-- Helper: Formula Insert -->
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors border border-outline-variant/30">
+<span class="material-symbols-outlined text-[16px] text-tertiary" data-icon="functions">functions</span>
+<span>Formula Insert</span>
+</button>
+<span class="font-body-sm text-body-sm text-outline hidden lg:inline ml-2">
+                Context: CS-401 (Graduate)
+              </span>
+</div>
+<!-- Send Action Button -->
+<div class="flex items-center gap-3">
+<span class="text-[11px] text-outline italic hidden sm:inline">AI generated content should be reviewed by faculty before assignment.</span>
+<button class="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-primary-container to-tertiary-container hover:brightness-110 text-white shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all duration-150 active:scale-95" title="Generate">
+<span class="material-symbols-outlined text-[20px]" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
